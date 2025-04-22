@@ -1,1 +1,1 @@
-# competition-synthetic-and-in-vitro-inverse-problem
+# synthetic-and-in-vitro-inverse-problem
