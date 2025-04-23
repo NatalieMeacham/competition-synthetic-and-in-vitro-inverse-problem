@@ -14,6 +14,8 @@ tspan=linspace(0,tfinal,tpoints);
 sgrid=linspace(0,1,points);
 sprobs = DistFn2(disttype,sgrid,a,b);
 
+%comment 
+
 
 %create propdata
 [t, cmat,weightedsol] = RK4FunctionC(sgrid, sprobs, rho, k, y0, tspan); %%regular
