@@ -1,0 +1,118 @@
+function [t, cmat,weightedsol] = RK4RhoGrowthFn(sgrid, sprobs, rho, y0, tspan_data)
+%function [h, k1, k2, k3, k4, cmat,weightedsol,uvec,sprobsmat] = RK4FunctionC(tpoints, tfinal, rho, sgrid, sprobs, points, y0)
+%cmat=zeros(tpoints,points)
+%tspan=linspace(0,tfinal,tpoints);
+%sprobsthingie?
+%uinit=; %initial u
+
+%h=tspan(2) - tspan(1); %delta t
+tfinal=tspan_data(end);
+tspan_data;
+tspan=linspace(0,tfinal,101);
+h=tspan(2) - tspan(1);
+
+%list of indices of tspan that also have a t_data point
+tdindices = [];
+for i=1:length(tspan)
+    if ismember(tspan(i),tspan_data) == 1
+        tdindices=[tdindices i];
+    end
+end
+
+%tdindices
+dcdt = @(csol,u) rho.*csol.*(1 - u).*(1 - sgrid');
+
+tpoints=length(tspan);
+points=length(sprobs);
+%sprobsmat=zeros(points, tpoints);
+%sprobsmat(:,1)=sprobs;
+uvec=zeros(tpoints,1);
+%y0vec=(y0*ones(points,1))'.*sprobs;
+y0vec=(y0*ones(points,1))';
+%uvec(1)=sum(y0vec); %do we need to multiply this by p(s) vec?
+uvec(1)=sum((sprobs/sum(sprobs)).*y0vec);
+%uvec(1)
+uvec
+%uvec(1)=sum((y0*ones(points,1))'.*sprobs)
+
+%u=sum(csol'.*sprobs)
+%sprobs
+%sprobs=csol'.*sprobs/u
+
+cmat=zeros(length(sgrid),length(tspan));
+%cmat(:,1)=y0*ones(length(sgrid),1); %old version
+%cmat(:,1)=y0vec; %new scaled version
+%cmat(:,1)=(y0*ones(points,1))';
+
+disp(size(cmat));
+
+
+%for k=1:points
+    cmat(:,1)=y0;
+    cmat
+%end
+%disp(size(cmat))
+%for loop over t
+%disp(size(uvec))
+for j=2:tpoints
+    %define k steps
+    %k1 = hf(x0, y0)
+    %k2 = hf[x0 + (½)h, y0 + (½)k1]
+    % k3 = hf[x0 + (½)h, y0 + (½)k2]
+    % k4 = hf(x0 + h, y0 + k3)
+%keyboard 
+%disp(size(cmat))
+    u=uvec(j-1);
+
+    k1=h.*dcdt(cmat(:,j-1),u);
+    k2=h.*dcdt(cmat(:,j-1),u + k1/2);
+    k3=h.*dcdt(cmat(:,j-1),u + k2/2);
+    k4=h.*dcdt(cmat(:,j-1),u + k3);
+    cmat(:,j)=cmat(:,j-1) + (k1 + 2*k2 + 2*k3 + k4)/6;%*ones(length(sgrid),1);
+    %keyboard
+    %y1 = y0 + (⅙) (k1 + 2k2 + 2k3 + k4)
+
+    %update u and sprobs
+    %u=sum(cmat(:,j)'.*sprobs); %OLD VERSION
+    %sprobs
+    %sprobs=cmat(:,j)'.*sprobs/u; %OLD SPROBS
+    %sprobs=cmat(:,j)'./u; %TRYING SMTH NEW HERE
+
+
+    %sprobs=cmat(:,j)'./sum(cmat(:,j)); %TRYING SMTH ELSE NEW
+    %update uvec
+    %uvec(j)=u;
+    %uvec(j)=sum(cmat(:,j)); %original
+    %uvec(j)=sum(cmat(:,j).*sprobs); %try new
+    uvec(j)=((sprobs/sum(sprobs))*cmat(:,j));
+    %disp(size(uvec(j)))
+    %update sprobsmat
+    %sprobsmat(:,j)=sprobs;
+end
+%disp(size(uvec))
+%disp(size(cmat))
+%weightedsol=1
+%weightedsol=zeros(1,tpoints);
+% for j=1:tpoints
+%     %weightedsol(j)=sum(cmat(:,j)*);
+% end
+cmat=cmat'
+weightedsol=(sprobs./(sum(sprobs)))*cmat'; %old
+%weightedsol=(sprobs./(sum(sprobs)))*cmat; %experimental 
+%weightedsol=weightedsol';
+t=tspan;
+t=t';
+uvec';
+% figure
+% plot(t,uvec,'*')
+% hold on
+% plot(t,weightedsol)
+% legend('uvec','weightedsol')
+% figure
+% plot(t,uvec)
+% hold on
+% plot(t,weightedsol,'*')
+t=t([tdindices])
+cmat=cmat([tdindices],:)
+weightedsol=weightedsol([tdindices])
+end

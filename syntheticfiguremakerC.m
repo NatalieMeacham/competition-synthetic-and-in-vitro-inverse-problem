@@ -11,7 +11,7 @@ timepoints = [6, 11, 26, 101];
 %     GLSInverseScriptNPaper(disttypes{kk},timepoints(end),noiselevels(1))
 % end
 
-[sgrid,sprobs, rsgrid,optweightfromAIC,t,propdata,sweightedsol,cdfS,cdfR]= GLSInverseScriptC('Bigaussian', 5,0.0,'y');
+[sgrid,sprobs, rsgrid,optweightfromAIC,t,propdata,sweightedsol,cdfS,cdfR]= GLSInverseScriptC('TwoPoints', 26,0.02,'y');
 
 %% Across all time meshes for same dist
 for jj=1:length(timepoints)

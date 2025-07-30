@@ -12,10 +12,10 @@ tfinal=10;
 tpoints=25;
 tspan=linspace(0,tfinal,tpoints);
 
-[t, cmat,weightedsol,uvec] = RK4FunctionC(sgrid, sprobs, rho, k, y0, tspan)
+[t, cmat,weightedsol] = RK4FunctionC(sgrid, sprobs, rho, k, y0, tspan)
 
-figure
-plot(t,uvec,'*')
-hold on
-plot(t,weightedsol)
-legend('uvec','weightedsol')
+% figure
+% plot(t,uvec,'*')
+% hold on
+% plot(t,weightedsol)
+% legend('uvec','weightedsol')
